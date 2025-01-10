@@ -18,7 +18,7 @@ def create_app():
     # def index():
     #     return "ggg"
     
-    from route import register_routes
+    # from route import register_routes
     # register_routes(app, db)
 
     migrate = Migrate(app, db)
