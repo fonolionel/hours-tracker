@@ -1,0 +1,159 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+}
+
+*{
+    padding: 0;
+    margin: 0;
+}
+
+.navbar{
+    width: 100%;
+    height: 13vh;
+    background: rgba(169, 171, 177, 0.253);
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    box-shadow: 4px 1px 15px rgba(0, 0, 0, 0.442);
+    display: flex;
+    justify-content: space-between;
+    gap: 0;
+}
+
+.logo{
+    width: 6%;
+    margin-left: 2%;
+    margin-top: 7px;
+    height: 11vh;
+}
+
+.logo img{
+    width: 97%;
+    height: 11vh;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.menu{
+    width: 30%;
+    height: 5vh;
+    margin-top: 6vh;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.menu a {
+    text-decoration: none;
+    font-size: 15px;
+    color: black;
+    font-weight: bold;
+    font-family: arial;
+}
+
+.menu a:hover{
+    text-decoration: underline;
+    text-underline-offset: 7px;
+    text-decoration-thickness: 3px;
+    color: rgba(0, 19, 128, 0.856); 
+}
+
+.log-link{
+    font-family: arial;
+    cursor: pointer;
+    background: rgba(0, 19, 128, 0.856);
+    margin: 30px;
+    display: flex;
+    border-radius: 50px;
+    width: 5%;
+    height: 45%;
+    color: white;
+    text-decoration: none;
+    margin-top: 2%;
+    justify-content: center;
+    align-items: center;
+}
+
+.log-link:hover{
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+}
+
+.log-btn{
+    cursor: pointer;
+    background: rgba(0, 19, 128, 0.856);
+    height: 20px;
+    border: none;
+    color: white;
+    background: transparent;
+}
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+h2, h3 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group select,
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.btn {
+    display: block;
+    width: 100%;
+    max-width: 200px;
+    margin: 20px auto;
+    background-color: rgba(0, 19, 128, 0.856);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn:hover {
+    background-color: rgba(0, 19, 128, 0.856);
+}
+
+.assigned-list ul,
+.check-progress ul {
+    list-style: none;
+    padding: 0;
+}
+
+.assigned-list ul li,
+.check-progress ul li {
+    background-color: #f9f9f9;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.statistics {
+    margin-top: 30px;
+    text-align: center;
+}

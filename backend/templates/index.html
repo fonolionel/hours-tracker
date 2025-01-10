@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <img src="logo.png">
+        </div>
+        <div class="menu">
+            <a href="">HOME</a>
+            <a href="details.html">DETAILS</a>
+            <a href="history.html">HISTORY</a>
+        </div>
+        <a href="loginsignup.html" class="log-link"><button class="log-btn">Login</button></a>
+    </div>
+    <div class="fpage">
+            <div class="left">
+                <div class="image">
+                    <img src="teachers.png"  >
+                </div>
+            </div>
+
+            <div class="right">
+                <div class="text-container">
+                    <span class="phrase hello">Your teaching hours <br> Simplified and <br> Oragnized.</span>
+                    <span class="phrase how">Helping you manage<br> your teaching time <br> with ease.</span>
+                </div> 
+                <div class="two-but">              
+                    <a href="details.html"> <button class="det-but">View details...</button></a>
+                    <a href="details.html"> <button class="get-started">Get started...</button></a>
+                </div> 
+            </div>
+    </div> <br><br>
+    <center><h2><strong>Assigned and Completed Hours</strong></h2></center>
+    <!-- Content for displaying and managing classes and subjects -->
+    <div class="sec-page">
+        <table id="data-table">
+            <thead>
+                <tr>
+                    <th>Class</th>
+                    <th>Subject</th>
+                    <th>Assigned Hours</th>
+                    <th>Completed Hours</th>
+                </tr>
+            </thead>
+            <tbody id="data-table-body">
+                <!-- Table rows will be populated here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="main.js"></script>
+
+    <!-- Include JavaScript specific to the details page -->
+    <script>
+        
+        const assignedData = [];
+
+        // Save data to localStorage and update the table
+        function saveDataToLocalStorage() {
+            localStorage.setItem('assignedData', JSON.stringify(assignedData));
+            updateTable(); // Update the table after saving data
+        }
+
+        // Load data from localStorage and populate the table
+        function loadDataFromLocalStorage() {
+            const storedData = localStorage.getItem('assignedData');
+            if (storedData) {
+                const parsedData = JSON.parse(storedData);
+                assignedData.push(...parsedData);
+
+                // Populate the table with the loaded data
+                updateTable();
+
+                // Update the progress subjects dropdown
+                updateProgressSubjects();
+
+                // Update the chart
+                updateChart();
+            }
+        }
+
+        // Function to update the table (without the Action column)
+        function updateTable() {
+            const tableBody = document.getElementById('data-table-body');
+            tableBody.innerHTML = ''; // Clear the current rows
+
+            assignedData.forEach(entry => {
+                const row = document.createElement('tr');
+
+                // Create table cells
+                const classCell = document.createElement('td');
+                classCell.textContent = entry.class;
+                row.appendChild(classCell);
+
+                const subjectCell = document.createElement('td');
+                subjectCell.textContent = entry.subject;
+                row.appendChild(subjectCell);
+
+                const assignedHoursCell = document.createElement('td');
+                assignedHoursCell.textContent = entry.hours;
+                row.appendChild(assignedHoursCell);
+
+                const completedHoursCell = document.createElement('td');
+                completedHoursCell.textContent = entry.completedHours;
+                row.appendChild(completedHoursCell);
+
+                // Append the row to the table body
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Modify the function to assign hours and store both assigned and completed hours
+        function assignHours() {
+            const classElement = document.getElementById('class');
+            const subjectElement = document.getElementById('subject');
+            const hoursElement = document.getElementById('hours');
+            console.log(classElement)
+
+            const selectedClass = classElement.value;
+            const selectedSubject = subjectElement.value;
+            const assignedHours = parseInt(hoursElement.value);
+
+            if (selectedClass && selectedSubject && assignedHours) {
+                assignedData.push({ class: selectedClass, subject: selectedSubject, hours: assignedHours, completedHours: 0 });
+
+                // Update the table
+                updateTable();
+
+                // Update the progress subjects dropdown
+                updateProgressSubjects();
+
+                // Update the chart
+                updateChart();
+
+                // Save data to localStorage
+                saveDataToLocalStorage();
+
+                // Reset form
+                classElement.value = '';
+                subjectElement.value = '';
+                hoursElement.value = '';
+            } else {
+                alert('Please fill out all fields before assigning.');
+            }
+        }
+
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', loadDataFromLocalStorage);
+    </script>
+
+
+
+    <footer class="footer">
+        <p>&copy; 2024 Your Company. All Rights Reserved.</p>
+        <p>
+          <a href="index.html">Home</a> |
+          <a href="loginsignup.html">Login</a> |
+          <a href="details.html">Details</a>
+        </p>
+      </footer>
+    
+</body>
+</html>

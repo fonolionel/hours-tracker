@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="details.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <img src="logo.png" >
+        </div>
+        <div class="menu">
+            <a href="index.html">HOME</a>
+            <a href="">DETAILS</a>
+            <a href="history.html">HISTORY</a>
+        </div>
+        <a href="loginsignup.html" class="log-link"><button class="log-btn">Login</button></a>
+    </div>
+
+    <div class="container">
+        <h2>Assign Hours to Classes</h2>
+        <form id="assignment-form">
+            <div class="form-group">
+                <label for="class">Select Class</label>
+                <select id="class" required>
+                    <option value="">-- Choose Class --</option>
+                    <option value="SE3A">SE3A</option>
+                    <option value="SE3B">SE3B</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="subject">Select Subject</label>
+                <select id="subject" required>
+                    <option value="">-- Choose Subject --</option>
+                    <option value="Isdm">ISDM</option>
+                    <option value="Advanced python programming">Advanced Python Programming</option>
+                    <option value="Oracle">ORACLE</option>
+                    <option value="labor">Labor Law</option>
+                    <option value="Laravel">Laravel</option>
+                    <option value="Sql">SQL Server</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="hours">Assign Hours</label>
+                <input type="number" id="hours" min="1" max="40" placeholder="Enter number of hours" required>
+            </div>
+
+            <button type="button" class="btn" onclick="assignHours()">Assign</button>
+        </form>
+
+        <div class="assigned-list">
+            <h3>Assigned Classes</h3>
+            <ul id="assigned-list">
+            </ul>
+        </div>
+
+        <div class="check-progress">
+            <h3>Check Progress</h3>
+            <div class="form-group">
+                <label for="progress-subject">Select Subject to Check</label>
+                <select id="progress-subject">
+                    <option value="">-- Choose Subject --</option>
+                </select>
+            </div>
+            <button type="button" class="btn" onclick="checkProgress()">Check After 2 Hours</button>
+            <ul id="progress-list">
+            </ul>
+        </div>
+
+        <div class="statistics">
+            <h3>Statistics</h3>
+            <canvas id="statsChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const assignedData = [];
+
+    // Helper function to get the current time in HH:MM:SS format
+    function getCurrentTime() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        return `${hours}:${minutes}:${seconds}`;
+    }
+
+    // Modify the function to assign hours and store both assigned and completed hours
+    function assignHours() {
+        const classElement = document.getElementById('class');
+        const subjectElement = document.getElementById('subject');
+        const hoursElement = document.getElementById('hours');
+
+        const selectedClass = classElement.value;
+        const selectedSubject = subjectElement.value;
+        const assignedHours = parseInt(hoursElement.value);
+
+        if (selectedClass && selectedSubject && assignedHours) {
+            const assignedList = document.getElementById('assigned-list');
+            const currentTime = getCurrentTime();  // Get current time when assigning hours
+
+            const listItem = document.createElement('li');
+            listItem.textContent = `${selectedClass} - ${selectedSubject} - ${assignedHours} hours assigned at ${currentTime}, 0 hours completed`;
+
+            // Create a delete button
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.onclick = () => deleteAssignedClass(assignedData.length, listItem);
+
+            listItem.appendChild(deleteButton);
+            assignedList.appendChild(listItem);
+
+            assignedData.push({ class: selectedClass, subject: selectedSubject, hours: assignedHours, completedHours: 0, time: currentTime });
+
+            updateProgressSubjects();
+            updateChart();
+
+            // Save data to localStorage
+            saveDataToLocalStorage();
+
+            // Reset form
+            classElement.value = '';
+            subjectElement.value = '';
+            hoursElement.value = '';
+        } else {
+            alert('Please fill out all fields before assigning.');
+        }
+    }
+
+    // Function to delete an assigned class
+    function deleteAssignedClass(index, listItem) {
+        // Remove the class from assignedData array
+        const deletedClass = assignedData.splice(index, 1)[0]; // Remove the entry and capture the deleted class
+
+        // Save the updated data to localStorage
+        saveDataToLocalStorage();
+
+        // Remove the class from the DOM list
+        listItem.remove();
+
+        // Update the progress subjects dropdown to remove the deleted class
+        updateProgressSubjects();
+
+        // Update the chart
+        updateChart();
+    }
+
+    // Save data to localStorage
+    function saveDataToLocalStorage() {
+        localStorage.setItem('assignedData', JSON.stringify(assignedData));
+    }
+
+    // Load data from localStorage
+    function loadDataFromLocalStorage() {
+        const storedData = localStorage.getItem('assignedData');
+        if (storedData) {
+            const parsedData = JSON.parse(storedData);
+            assignedData.push(...parsedData);
+
+            // Populate the assigned list with time information
+            const assignedList = document.getElementById('assigned-list');
+            parsedData.forEach((entry, index) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${entry.class} - ${entry.subject} - ${entry.hours} hours assigned at ${entry.time}, ${entry.completedHours} hours completed`;
+
+                // Create a delete button
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.onclick = () => deleteAssignedClass(index, listItem);
+
+                listItem.appendChild(deleteButton);
+                assignedList.appendChild(listItem);
+            });
+
+            // Update progress subjects dropdown
+            updateProgressSubjects();
+
+            // Update the chart
+            updateChart();
+        }
+    }
+
+    // Function to check progress and update the completed hours
+    function checkProgress() {
+        const progressSubjectElement = document.getElementById('progress-subject');
+        const selectedProgress = progressSubjectElement.value;
+
+        if (!selectedProgress) {
+            alert('Please select a subject to check progress.');
+            return;
+        }
+
+        const progressList = document.getElementById('progress-list');
+        progressList.innerHTML = '';
+
+        assignedData.forEach(entry => {
+            if (`${entry.class}-${entry.subject}` === selectedProgress && entry.completedHours < entry.hours) {
+                entry.completedHours += 2;
+                if (entry.completedHours > entry.hours) {
+                    entry.completedHours = entry.hours;
+                }
+
+                const progressItem = document.createElement('li');
+                progressItem.textContent = `${entry.class} - ${entry.subject}: ${entry.completedHours}/${entry.hours} hours completed as of ${getCurrentTime()}`;
+
+                progressList.appendChild(progressItem);
+            }
+        });
+
+        updateChart();
+    }
+
+    // Update the "Select Subject to Check" dropdown
+    function updateProgressSubjects() {
+        const progressSubjectElement = document.getElementById('progress-subject');
+        progressSubjectElement.innerHTML = '<option value="">-- Choose Subject --</option>'; // Clear previous options
+
+        assignedData.forEach(entry => {
+            const option = document.createElement('option');
+            option.value = `${entry.class}-${entry.subject}`;
+            option.textContent = `${entry.class} - ${entry.subject}`;
+            progressSubjectElement.appendChild(option);
+        });
+    }
+
+    // Function to update the chart with assigned and completed hours
+    const ctx = document.getElementById('statsChart').getContext('2d');
+    const statsChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Hours Assigned',
+                data: [],
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }, {
+                label: 'Hours Completed',
+                data: [],
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Function to update the chart with the latest data
+    function updateChart() {
+        const labels = [];
+        const assignedDataSet = [];
+        const completedDataSet = [];
+
+        assignedData.forEach(entry => {
+            const label = `${entry.class} - ${entry.subject}`;
+            labels.push(label);
+            assignedDataSet.push(entry.hours);
+            completedDataSet.push(entry.completedHours);
+        });
+
+        statsChart.data.labels = labels;
+        statsChart.data.datasets[0].data = assignedDataSet;
+        statsChart.data.datasets[1].data = completedDataSet;
+        statsChart.update();
+    }
+
+    // Load data on page load
+    document.addEventListener('DOMContentLoaded', loadDataFromLocalStorage);
+</script>
+
+</body>
+</html>

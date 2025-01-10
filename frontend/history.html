@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History</title>
+    <link rel="stylesheet" href="details.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <img src="logo.png" >
+        </div>
+        <div class="menu">
+            <a href="index.html">HOME</a>
+            <a href="details.html">DETAILS</a>
+            <a href="history.html">HISTORY</a>
+        </div>
+        <a href="loginsignup.html" class="log-link"><button class="log-btn">Login</button></a>
+    </div>
+
+    <div class="container">
+        <h2>Teaching History</h2>
+        <div class="assigned-list">
+            <ul id="history-list">
+                <!-- The history will be dynamically loaded here -->
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Load data from localStorage and display it on the history page
+        function loadHistory() {
+            const historyList = document.getElementById('history-list');
+            const storedData = localStorage.getItem('assignedData');
+            
+            if (storedData) {
+                const parsedData = JSON.parse(storedData);
+                
+                parsedData.forEach(entry => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `${entry.class} - ${entry.subject} - ${entry.hours} hours assigned at ${entry.time}, ${entry.completedHours} hours completed`;
+
+                    historyList.appendChild(listItem);
+                });
+            } else {
+                const noDataItem = document.createElement('li');
+                noDataItem.textContent = "No assigned classes found.";
+                historyList.appendChild(noDataItem);
+            }
+        }
+
+        // Load the history on page load
+        document.addEventListener('DOMContentLoaded', loadHistory);
+    </script>
+</body>
+</html>

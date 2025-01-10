@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login & Signup</title>
+  <link rel="stylesheet" href="loginsignup.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <img src="logo.png">
+        </div>
+        <div class="menu">
+            <a href="index.html">HOME</a>
+            <a href="details.html">DETAILS</a>
+            <a href="">HISTORY</a>
+        </div>
+        <a href="index.html" class="log-link"><button class="log-btn">Back</button></a>
+    </div>
+
+    <!-- Login & Signup Section -->
+    <div class="form-container">
+        <h2 id="form-title">Login</h2>
+        <form id="login-form" class="active">
+            <div class="form-group">
+                <label for="login-email">Email</label>
+                <input type="email" id="login-email" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="btn">Login</button>
+        </form>
+        <form id="signup-form">
+            <div class="form-group">
+                <label for="signup-username">Username</label>
+                <input type="text" id="signup-username" placeholder="Enter your username" required>
+            </div>
+            <div class="form-group">
+                <label for="signup-email">Email</label>
+                <input type="email" id="signup-email" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label for="signup-password">Password</label>
+                <input type="password" id="signup-password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="btn">Signup</button>
+        </form>
+        <p>
+            <span id="toggle-link">Don't have an account? Signup</span>
+        </p>
+    </div>
+
+    <script>
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        const toggleLink = document.getElementById('toggle-link');
+        const formTitle = document.getElementById('form-title');
+
+        toggleLink.addEventListener('click', () => {
+            if (loginForm.classList.contains('active')) {
+                loginForm.classList.remove('active');
+                signupForm.classList.add('active');
+                formTitle.textContent = 'Signup';
+                toggleLink.textContent = 'Already have an account? Login';
+            } else {
+                signupForm.classList.remove('active');
+                loginForm.classList.add('active');
+                formTitle.textContent = 'Login';
+                toggleLink.textContent = "Don't have an account? Signup";
+            }
+        });
+    </script>
+</body>
+</html>
